@@ -30,39 +30,42 @@ int main(){
 		exit(0);
 	}
 
-    printf("Enter an Expression:\n");
-    readChar = getline(&buffer, &len, stdin);
+    while(1){
+        printf("Enter -1 to exit\n");
+        printf("Enter an Expression:\n");
+        readChar = getline(&buffer, &len, stdin);
+        if(readChar >=1 && buffer[readChar-1]=='\n') buffer[readChar-1] = '\0';
 
-    if(readChar >=1 && buffer[readChar-1]=='\n') buffer[readChar-1] = '\0';
+        if(strcmp("-1",buffer)==0) break;
 
-    int i=0;
-    while (buffer[i] != '\0')
-    {
-        int j=0;
-        while (j<100&&buffer[i]!='\0')
+
+        int i=0;
+        while (buffer[i] != '\0')
         {
-            buf[j] = buffer[i];
-            j++;
-            i++;
+            int j=0;
+            while (j<100&&buffer[i]!='\0')
+            {
+                buf[j] = buffer[i];
+                j++;
+                i++;
+            }
+
+            while (j<100)
+            {
+                buf[j]='\0';
+                j++;
+            }
+            
+            send(socketid, buf, strlen(buf) + 1, 0);        
         }
 
-        while (j<100)
-        {
-            buf[j]='\0';
-            j++;
-        }
-        
-        send(socketid, buf, strlen(buf) + 1, 0);        
+
+        for(int i=0; i < 100; i++) buf[i] = '\0';
+        recv(socketid, buf, 100, 0);
+        printf("%s\n", buf);
     }
 
     free(buffer);
-
-    strcpy(buf,"-3  +(2+3)");
-
-    for(int i=0; i < 100; i++) buf[i] = '\0';
-	recv(socketid, buf, 100, 0);
-	printf("%s\n", buf);
-
 		
 	close(socketid);
 	return 0;
