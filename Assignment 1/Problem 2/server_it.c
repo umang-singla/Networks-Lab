@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #define BUFF_SIZE 100
 
+
 // function to check if a character is an operator
 int isOperator(char a){
     if(a == '+' || a == '-' || a == '/' || a == '*') return 1;
@@ -140,7 +141,7 @@ int main(){
         // recieving the data from the client in packets
         while (!done)
         {
-            recv(new_socketid, buffer, 100, 0);
+            recv(new_socketid, buffer, BUFF_SIZE, 0);
             int len = 0;
             for(int i=0;i<BUFF_SIZE;i++){
                 if(buffer[i]=='\0') {
@@ -156,10 +157,10 @@ int main(){
             }
         }
         expr[cursize] = '\0';
-		if(expr[0]!='\0') printf("Recieved Expression: %s\n", expr);
+		if(expr[0]!='\0') printf("Recieved Expression: %s\n", expr);        
 
         // evauating the recieved expression and storing it in the buffer
-        sprintf(buffer, "%f", evaluateExpr(buffer));
+        sprintf(buffer, "%f",evaluateExpr(expr));
 
         // sending the evauated result to the client
 		send(new_socketid, buffer, strlen(buffer) + 1, 0);
@@ -169,6 +170,8 @@ int main(){
 
         printf("Client Disconnected!\n\n");
     }
+
+    free(buffer);
 
     return 0;
 }

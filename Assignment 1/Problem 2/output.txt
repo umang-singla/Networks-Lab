@@ -1,0 +1,34 @@
+Enter -1 to exit
+Enter an Expression:
+Result: 37.840000
+
+Enter -1 to exit
+Enter an Expression:
+Result: 1.000000
+
+Enter -1 to exit
+Enter an Expression:
+Result: -0.000000
+
+Enter -1 to exit
+Enter an Expression:
+Result: -660000.000000
+
+Enter -1 to exit
+Enter an Expression:
+Result: 1.000000
+
+Enter -1 to exit
+Enter an Expression:
+Result: 7.002501
+
+Enter -1 to exit
+Enter an Expression:
+Result: 980.000000
+
+Enter -1 to exit
+Enter an Expression:
+Result: 1.000000
+
+Enter -1 to exit
+Enter an Expression:

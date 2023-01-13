@@ -54,14 +54,13 @@ int main(){
                 j++;
                 i++;
             }
-
             while (j<100)
             {
                 buf[j]='\0';
                 j++;
             }
             
-            send(socketid, buf, strlen(buf) + 1, 0);        
+            send(socketid, buf, 100, 0);       
         }
 
         // recieving the result from the server
