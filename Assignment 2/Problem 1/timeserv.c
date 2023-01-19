@@ -25,6 +25,7 @@ int main() {
     memset(&servaddr, 0, sizeof(servaddr)); 
     memset(&cliaddr, 0, sizeof(cliaddr)); 
       
+    // Server information
     servaddr.sin_family    = AF_INET; 
     servaddr.sin_addr.s_addr = INADDR_ANY; 
     servaddr.sin_port = htons(8181); 
@@ -44,15 +45,18 @@ int main() {
         int n; 
         socklen_t len;    
         len = sizeof(cliaddr);
+        // recieving the data from the client
         n = recvfrom(sockfd, (char *)buffer, MAXLINE, 0, (struct sockaddr *) &cliaddr, &len); 
+        // fetching the current date and time
         time_t t;
         time (&t);
         memset(buffer, '\0', MAXLINE);
+        // sending the current date and time to the client
         sprintf(buffer, "Current Date & Time: %s", ctime(&t));
         sendto(sockfd, (const char *)buffer, MAXLINE, 0, (const struct sockaddr *) &cliaddr, len);
     }
     
-    
+    // closing the socket
     close(sockfd);
     return 0; 
 } 
