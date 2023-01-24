@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
     int load_s1=0, load_s2=0; // load_s1 is the load of server 1 and load_s2 is the load of server 2
 
     // Iterative server that handles one client at a time
-    int tim = 5000; // timeout for poll
+    int tim = 0; // timeout for poll
     for(;;){
         int clilen = sizeof(client_addr);
         // accepting a connection
