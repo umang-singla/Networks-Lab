@@ -1,0 +1,61 @@
+Data Structures Used:
+
+# used to store a field in Send_Message and Received_Message tables
+    typedef struct Msg
+    {
+        int size;           
+        char buf[MAX_MSG_SIZE];
+    } msg;
+
+    This data structure is for an entry in Send_Message and Received_Message tables. The size field represents the size length of the message and buf field stores the message itself.
+
+# used to create Send_Message and Received_Message tables
+    typedef struct Table
+    {
+        int size;
+        int ptr;
+        msg *buf;
+    } table;
+
+    This data structure is for Send_Message and Received_Message tables. The size field represents the number of entries in the table. The ptr represents on which index the data is needed to be inserted and buf is an array of msg which stores the messages of table.
+
+Function Description:
+
+1) int my_socket(int, int, int):
+    This function initializes all the mutex and condition variables. It creates two threads send_thread and recv_thread and allocates and initializes space for two tables Send_Message and Received_Message and finally returns file decriptor of the created socket.
+
+2) int my_bind(int, const struct sockaddr *, socklen_t):
+    It binds the socket with an address port using bind call.
+
+3) int my_listen(int sockfd, int backlog):
+    It makes a listen call to the file descriptor of the socket
+
+4) int my_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen):
+    It accepts a connection on the MyTCP socket by making the accept call on the TCP socket.
+
+5) int my_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen):
+    It opens a connection through the MyTCP socket by making the connect call on the TCP socket.
+
+6) ssize_t my_send(int sockfd, void *buf, size_t len, int flags):
+    It takes message to be sent as input and adds the message in the Send_Message Table from where the send_thread sends the message.
+
+7) ssize_t my_recv(int sockfd, void *buf, size_t len, int flags):
+    It looks up the Received_Message table which is filled by the recv_thread. If there is an entry in the Received_Message table the my_recv function reads the len amounts of the characters from the table and returns the number of characters read as output.
+
+8) int my_close(int sockfd):
+    It cancels the send_thread and recv_thread and frees the space allocated to the two tables, mutexes, condition variables, and closes the socket.
+
+
+Flow of my_send:
+--> It returns 0 if length to be send is zero.
+--> It acquires the mutex lock and then conditionally waits if the send_table is full or not.
+--> Meanwhile send_thread checks if connection is established or not. If the connections is established it aquires the mutex lock and conditionally wait until there is an entry in the send_table. When it founds an entry in the send_table it appends the length of the message as header of 4 bytes and then send signal to the waiting threads and then finally send the message along with the header in chunk of 1000 bytes. 
+--> When the my_send recieved the signal that the send_table is not full it stores the message in the send_table and when the table size becomes 1 it send signal to the waiting threads.
+--> Returns the number of bytes sent.
+
+Flow of my_recv:
+--> It acquires the mutex lock and then conditionally waits if the recv_table is empty or not.
+--> If the client closes the connection meanwhile, the recv_thread will check if the connection is closed or not. If the connection is closed it will send signal to the waiting threads and then exit.
+--> Meanwhile recv_thread checks if connection is established or not. If the connections is established it blocks on the recv call till a message is recieved. It then processes the first four bytes of the message to detect the length of message and recieves the entire message. It then acquires the lock on recv_table and conditionally waits if the recv_table is full or not. Once it finds an empty entry in the recv_table it stores the message in the recv_table and when the table size becomes 1 it send signal to the waiting threads.
+--> When the my_recv recieved the signal that the recv_table is not empty it reads and returns the message in the recv_table, and when the table size becomes MAX_BUF_SIZE-1 it send signal to the waiting threads.
+--> Returns the number of bytes recieved.
