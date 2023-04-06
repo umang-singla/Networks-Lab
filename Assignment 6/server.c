@@ -62,5 +62,7 @@ int main(int argc, char *argv[])
     if (recv_icmp->type == ICMP_DEST_UNREACH)
     {
         printf("ICMP destination unreachable received from %s\n", inet_ntoa(recv_addr.sin_addr));
+        char *buffer = (char *)(recv_packet + sizeof(struct iphdr) + sizeof(struct icmphdr));
+        printf("%s\n",buffer);
     }
 }

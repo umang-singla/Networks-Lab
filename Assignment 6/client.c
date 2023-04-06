@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     ip->ihl = 5;
     ip->version = 4;
     ip->tos = 0;
-    ip->tot_len = sizeof(struct iphdr) + sizeof(struct icmphdr);
+    ip->tot_len = sizeof(struct iphdr) + sizeof(struct icmphdr) + 15;
     ip->id = htons(54321);
     ip->frag_off = 0;
     ip->ttl = 1;
@@ -99,6 +99,10 @@ int main(int argc, char *argv[])
     icmp->un.echo.id = htons(10);
     icmp->un.echo.sequence = htons(10);
     icmp->checksum = in_cksum((unsigned short *)icmp, sizeof(struct icmphdr));
+
+    char* buffer = (char *)(packet + sizeof(struct iphdr) + sizeof(struct icmphdr));
+
+    strcpy(buffer, "hello world");
 
     if (sendto(sockfd, packet, ip->tot_len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0) {
         perror("sendto failed");
